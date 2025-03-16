@@ -375,3 +375,206 @@ Wenn Sie mit einer User Story oder einem Use Case konfrontiert sind, fragen Sie 
 Die Granularität der Interaktionen ist bestimmend für die Form der Entry-Point-Funktionen. Bei der Anforderungsanalyse werden Sie deshalb den größten Teil der Zeit auf den Slicing-Ebenen ab Interaction verbringen. Insbesondere das Aushandeln der Testfälle benötigt viel Zeit. POs legen sich ungern fest. 
 
 Um es Ihnen und POs in der Hinsicht einfacher zu machen, können Sie allerdings noch eine Ebene tiefer steigen als CQS. Features sind Inkremente innerhalb derer für Entry Points; die Funktionen sind definiert, dennoch kann der Scope feiner geschnitten werden. Das soll im nächsten Artikel geschehen.
+
+ANFORDERUNGSANALYSE FÜR ENTWICKLER, TEIL 4
+
+Die Benutzerschnittstelle treibt das Slicing
+
+Die Struktur der Oberfläche gibt wertvolle Hinweise darauf, wo der Entwurf beginnen sollte. Klarheit gewinnen Sie besten durch eine schrittweise Annäherung.
+
+Das Verhalten von Software wird durch Interaktionen mit dem Benutzer getriggert. Jeder Interaktion steht eine Funktion gegenüber, ein Entry Point. In HTTP-Servern wird das durch das Protokoll nahegelegt und ist mit MVC-Frameworks leicht umsetzbar. Slicing Part 4 Bild 1 zeigt ein sehr simples Beispiel dafür:
+
+Die eigentliche Arbeit wird vom Code hinter der „Processor-Fassade“ verrichtet. Dessen Entry Points sind Wurzeln eines womöglich sehr tiefen Funktionsbaums, in dem das gewünschte Verhalten durch Logik [1] hergestellt wird.
+
+Hinter der Grenze der Entry Points gibt es keine Abhängigkeit mehr von der Frontend-Technologie – hier ein MVC-Framework.
+
+Um die Aufrufe der Entry Points herum sorgt das Frontend explizit oder implizit dafür, Daten vom Benutzer zu beschaffen (collect) beziehungsweise für ihn aufzubereiten (project). Beides ist abhängig von der Frontend-Technologie. In Slicing Part 4 Bild 2 sehen Sie ein Beispiel dafür.
+
+Die Datensammlung vor dem Entry Point ist nötig, weil Benutzer Entry Points nicht direkt ansprechen können; sie sind ja keine Programmierer. Der collect-Schritt macht den Entry Point vermittels einer Frontend-Technologie zugänglich. Der project-Schritt leistet dasselbe für das Ergebnis des Entry Points; er rückübersetzt es in die Welt des Anwenders. Dass im Beispiel der Anwender eine andere Software ist, die Daten nicht „eingibt“, sondern über ein Protokoll sendet beziehungsweise empfängt, tut der Allgemeinheit dieses Verarbeitungsflusses keinen Abbruch. Genauso sieht es aus, wenn eine Software eine grafische Benutzeroberfläche hat. Die Entry Points werden in diesem Fall nur durch eine andere Technologie zugänglich gemacht. Sie als Softwareentwickler sind primär verantwortlich für die Herstellung des Verhaltens hinter Entry Points. Benutzerschnittstellen sind so betrachtet lediglich ein notwendiges Übel – machen dafür jedoch leider oft viel Mühe. Deshalb legt der Slicing-Ansatz für die Anforderungsanalyse so viel Wert darauf, die Entry Points einer Software herauszuarbeiten. Ab dort herrscht einfach Klarheit, und Sie sind in Ihrem Element. Sobald En­try Points mit Signatur und Testfällen definiert sind, kann ein Entwurf mit anschließender Codierung ernst- haft beginnen.
+
+Jenseits des Trivialen ist es allerdings so, dass Software Dutzende, gar Hunderte von Entry Points hat, weil auf dutzendfache, gar hundertfache Weise mit ihr interagiert werden kann (Slicing Part 4 Bild 3). Angesichts dessen stellt sich die Frage, wie all diese Entry Points gefunden und ausreichend spezifiziert werden können. Denn eines ist klar: Sie lassen sich nicht einfach aufzählen. Sie können den PO nicht fragen: „Wie lauten die Entry Points, die du dir wünschst?“ Und selbst eine Frage nach allen Interaktionen läuft ins Leere.
+
+Die Lösung kann nur darin bestehen, die Menge aller In- teraktionen mit ihren zugehörigen Entry Points zu untertei- len. Sogar mehrfach zu unterteilen, je nachdem, wie umfang- reich und unübersichtlich die Anforderungen sind. Im Slicing gibt es dafür eine konkrete Hierarchie (Bild 4), die orthogonal zu User Stories oder Use Cases ist. Orthogonal zu User Stories und Use Cases ist die Hierar- chie der Scopes beim Slicing deshalb, weil sich erstens die- se Scopes vertikal und horizontal in jenen verorten lassen (Bild 5). Und zweitens, weil diese auf technische Artefakte ab- gebildet sind, jene mit Technik jedoch nichts zu tun haben. User Stories und Use Cases bieten interessante Blickwin- kel auf Anforderungen. Aber sie sind nicht angebunden an die Realität der Arbeit eines Softwareentwicklers nach der Anforderungsanalyse. Sie lassen ihn ohne Ansatzpunkte für den darauf folgenden Entwurf und die Codierung zurück. Deshalb empfehle ich Ihnen, nach Gesprächen über User Stories und Use Cases das Slicing-Messer in die Hand zu nehmen und den Scope, der nach Arbeit mit diesen Werkzeu- gen abgesteckt wurde, feiner und feiner zu schneiden, bis Sie zumindest Entry Points herausgearbeitet haben (Bild 6). Slicing liefert einfach konkrete Strukturelemen- te für die Programmierung.
+
+Applikationen
+
+Wenn ein Softwaresystem zu groß ist, um gleich vom Gesamtüberblick – der sogenannten Softwarezelle – direkt bis hinunter zur Ebene der Interaktionen zu springen, dann können Sie sich dem System schrittweise annähern. Meine Empfehlung: Schauen Sie zuerst die Rollen an, die Sie als Nutzer des Systems identifiziert haben. Fragen Sie sich für jede Rolle: Wäre es für diese Rolle vorteilhaft, eine eigene Applikation anzubieten?
+
+Mit Applikation meine ich eine „getrennte Software“, die der Benutzer zum Beispiel auf dem Desktop über ein eigenes Icon starten kann oder für die es einen eigenen URL gibt. Ein Beispiel sind Produktivitätsapplikationen wie E-Mail-Client, Kalender, Aufgabenverwaltung, Notizen und Adressenverwaltung. Alle diese Themen gehören auf hoher Abstraktionsebene zusammen (Slicing Part 4 Bild 7), und Microsoft hat mit Outlook auch alles unter einem Applikationsdach versammelt.
+
+Doch es gibt auch noch einen anderen Weg, um mit der umfangreichen Anforderung „Produktivitätsunterstützung“ umzugehen. Sie können jeder Rolle mit ihren Anforderungen eine eigene Applikation geben. Das ist der Ansatz, den Sie auf iPhones ganz natürlich umgesetzt sehen (Slicing Part 4 Bild 8). Sobald Sie mehrere Rollen als Nutzer eines Softwaresystems identifiziert haben, müssen Sie entscheiden, ob Sie einen One-size-fits-all-Ansatz umsetzen oder lieber ein Best-of-breed-Angebot machen wollen:
+
+One size fits all: Alle Rollen arbeiten mit derselben Anwendung. Die Anwendung integriert die Teil-Lösungen für die unterschiedlichen Rollen unter dem Dach einer Benutzerschnittstelle und auf der Basis einer Technologie.
+
+Best of breed: Alle Rollen bekommen ihre eigenen Anwendungen. Die Anwendungen werden über Ressourcen, allgemeiner: über Standards integriert. Jede Anwendung kann eine optimale Benutzerschnittstelle anbieten und die für sie am besten geeignete Technologie nutzen (etwa Web versus Desktop versus Mobile).
+
+Zusätzlich bietet eine Best-of-breed-Umsetzung mehr Möglichkeiten paralleler Entwicklung. Die Arbeitstei- lung ist einfacher, und auch eine jeweils eigene Entwick- lungsgeschwindigkeit (Release-Zyklus) ist möglich. Hier sind Anforderungen und Umsetzungen stärker voneinander entkoppelt.
+
+Ich halte den Best-of-breed-Ansatz für unterschätzt. Zu selten werden große Softwaresysteme zum Nutzen für Anwender und Entwickler wirklich in separate Anwendungen aufgeteilt. Anwender profitieren von besseren Benutzer- schnittstellen, Entwickler profitieren von übersichtlicheren Codebasen. Es müssen weniger Kompromisse eingegangen werden, um unterschiedliche Rollen zufriedenzustellen. Der Nachteil von explizitem Aufwand für die Verbindung der Apps ist im Grunde ein Vorteil: Darin manifestiert sich Entkopplung. Veränderungen in einem Bereich schlagen weniger schnell auf andere Bereiche durch. 
+
+Jede Applikation ist wiederum ein System für sich mit eigenen Portalen, Providern und einer spezifischeren Domäne als das Ganze. Die Zerlegung des Gesamtsystems in Applikationen ist also selbstähnlich. Slicing Part 4 Bild 9 zeigt, wie dabei eine Ressource zu einem Verbindungsglied werden kann; die ist vorher schon zu sehen (A) oder wird bei der Aufspaltung zur Integration eingeführt (B). Jede Applikation steht für einen kleineren Scope als das Gesamtsystem. Jede Applikation ist ein Inkrement, das heißt, sie bietet bei Lieferung für sich genommen dem Anwender einen Nutzen.
+
+Der kleinere Scope besteht aus einer reduzierten Anzahl von Interaktionen je Applikation. Auch wenn die Interaktionen für ein ganzes Softwaresystem nicht bekannt sind und auch für die einzelnen Applikationen noch nicht klar sind, so ist dennoch gewiss, dass es je Applikation weniger sind als für das Gesamtsystem (Slicing Part 4 Bild 10). Auf diese Weise können Sie sich auf jeden Fall besser konzentrieren: bei der weiteren Analyse und bei der späteren Implementation.
+
+Perspektiven
+
+Aber was, wenn selbst je Applikation die Interaktionen noch nicht deutlich zu erkennen sind? Wie können Sie dann den Scope weiter einengen? Für mich ist dann die nächste Ebene innerhalb der Applikationen die der Perspektive. Innerhalb des gesamten Frontends einer Applikationen lassen sich oft „Bereiche“ unterscheiden, die sehr verschieden sind. Dieselbe Benutzerrolle nimmt in ihnen noch mal unterschiedliche Perspektiven ein. Ihr Blickwinkel wechselt zum Beispiel von Fachlichkeit zu Sicherheit, oder innerhalb der Fachlichkeit wechselt sie von den Stammdaten zu den Bewegungsdaten (Slicing Part 4 Bild 11).
+
+Sehen Sie ein Frontend nicht als „monolithisch“ an. Was Anwender grundsätzlich durch das Frontend mit einer Applikation tun wollen, ist durchaus sehr verschieden. Indem Sie diese Perspektiven identifizieren, bilden Sie innerhalb des Scopes einer Applikation wiederum Untermengen von Interaktionen: die im einen Bereich versus die im anderen Bereich. 
+
+Wieder gilt: Sie kennen die Interaktionen ja noch nicht. Nur eines ist gewiss: Wenn Sie das ganze Frontend in sinnvolle Teilbereiche zerlegen, wird jeder weniger davon enthalten, die dann auch leichter zu identifizieren sein werden. 
+
+Wie manifestieren sich Perspektiven in einer Applikation? Meistens sind es Gruppen von Dialogen, Forms beziehungsweise Seiten. Sie starten zum Beispiel eine Desktop-Anwendung und finden darin im Menü verschiedene Bereiche, in die Sie „einsteigen können“. Denken Sie etwa an Microsoft Word:
+
+Die zentrale Perspektive in Word ist die Bearbeitung des Textes; dazu gehören auch Dialoge wie Absatzformatierung oder die Formatierung mit Nummerierungen oder Aufzählungen.
+
+Smartart und Diagramme hingegen rechne ich einer anderen Perspektive zu. 
+
+Sendungen (Serienbriefe, Etiketten, Um- schläge) gehören ebenfalls zu einer anderen Perspektive.
+
+Und so weiter.
+
+Ich denke, wenn Sie es zulassen, so zu denken, dass die Benutzerschnittstelle einer Applikation eben kein Monolith sein muss, sondern aus Teilen, Modulen, Bereichen bestehen kann, dann werden Sie bei der Diskussion über Anforderungen erspüren, wo sich Grenzen ziehen lassen.
+
+Der Zweck im Rahmen des Slicings ist auch hier, es Ihnen leichter zu machen, auf die Interaktionen zu kommen. Beim Slicing geht es nicht um UX. Sie sollen die Perspektiven nicht visuell gestalten. Wenn ein UX-Spezialist Ihnen in den Analysegesprächen zur Seite steht, ist das wunderbar. Zu früh können UI und UX nicht eingebunden werden. Dennoch ist das primäre Interesse beim Slicing nicht die Gestaltung, nicht das Wie, sondern
+das Was. Was sollen Benutzer durch das Frontend anstoßen können? In welcher Granularität sollen sie Verhalten aus der Software „herauskitzeln“?
+
+Dialoge
+
+Wenn Ihnen Perspektiven etwas abstrakt vorgekommen sind, atmen Sie hoffentlich nun auf, wenn ich mit Ihnen eine Ebene tiefer in der Slicing-Hierarchie steige; dort finden sich die Dialoge. Jede Perspektive umfasst einen oder mehrere Dialoge, die konkrete Benutzerschnittstellenelemente zusammenfassen. 
+
+Dialoge sind Fenster, Formulare, Seiten oder auch Tabs darin. Gewöhnlich sind es rechteckige Bildschirmausschnitte, die Sie minutiös mit Controls oder Widgets füllen, in denen Anwender entweder Daten erfassen, Verarbeitung triggern oder Daten angezeigt bekommen. Auf der Ebene der Dialoge werden Interaktionen das erste Mal verlässlich sichtbar. Ohne Interaktion öffnet sich kein Dialog. Das beginnt mit dem Applikationsstart. 
+
+Als Beispiel kann eine simple Fakturierungsanwendung dienen, die aus folgenden Perspektiven mit ihren Dialogen besteht:
+
+Sicherheit
+
+Login
+Passwort zurücksetzen
+
+Stammdaten
+
+Kundenübersicht
+Kundendetails
+Produktübersicht
+Produktdetails
+
+Bewegungsdaten
+
+Rechnungsübersicht
+Rechnungsdetails
+Überfällige Zahlungen
+Zahlungseingang
+
+Jede Perspektive hat es leichter gemacht, sich auf die Frage zu konzentrieren: Welche Dialoge helfen dem Benutzer, seine Arbeit zu erledigen? Bei der Definition der Dialoge hilft es schon sehr, UI/UX-Spezialisten zur Seite zu haben. Sie können sagen, wie sich Daten am besten erfassen beziehungsweise präsentieren lassen; dazu gehört die Zusammenfassung in Dialoge. 
+
+Auf der Dialog-Ebene der Slicing-Hierarchie geht es darum, welche Dialoge es gibt und wie sie zusammenhängen (Slicing Part 4 Bild 12). Von welchem Dialog kommt der Benutzer zu welchem anderen? Jeder Übergang steht schon für eine Interaktion. Endlich kommen Sie also bei den ersten Entry Points eines Softwaresystems an. 
+
+Manchmal sind die Übergänge unidirektional wie zum Beispiel vom Dialog der Rechnungsübersicht zu den überfälligen Zahlungen. Das bedeutet nicht, dass der Benutzer nicht von dort zurück kann – er könnte zum Beispiel einen modalen Dialog einfach schließen –, sondern dass der Rückweg kein Verhalten triggert, das Sie speziell codieren müssten. Die UI-Technologie übernimmt für Sie den Rückweg. 
+
+Manchmal gibt es Hin- und Rückwege zwischen Dialogen, die getrennt sind, wie zum Beispiel zwischen Login und Rechnungsübersicht. Das bedeutet, diese Interaktionen sind unabhängig voneinander. Die Benutzerin kommt vom Login-Dialog zur Rechnungsübersicht, muss nicht zurück (logout), kann aber. 
+
+Manchmal kommt ein Dialog „aus dem Nichts“ (zum Beispiel Login). Das bedeutet, hier wird die Applikation gestartet und der Dialog erscheint als Erstes. 
+
+Manchmal führt ein Dialog „ins Nichts“ (zum Beispiel Login, Passwort zurücksetzen oder Rechnungsübersicht). Das bedeutet, hier beendet eine Interaktion die Applikation. 
+
+Und schließlich gibt es bidirektionale Überhänge wie zum Beispiel von Kundenübersicht zu Kundendetails. Dann ist der Rückweg nicht optional und auch bedeutungsvoll. Sie wollen über das UI-Verhalten hinaus – ein Fenster wird geschlossen – die Software etwas tun lassen, zum Beispiel sollen beim Rückweg veränderte Daten gespeichert werden. 
+
+Ein solches Übergangsdiagramm könnten Sie auch schon auf der Perspektivenebene anfertigen. Doch dort ist gewöhnlich so wenig klar, von wo aus die Übergänge getriggert werden, dass diese Interaktionen eher spekulativ als nützlich sind.
+
+Sobald Sie jedoch Dialoge in den Blick nehmen, wird Ihnen sehr schnell klar, wie sie zusammenhängen – und wie darüber dann auch Perspektiven verbunden sind. Vielleicht spüren Sie bereits am Beispiel in Slicing Part 4 Bild 12, wie sich Fragen aufdrängen. Klarheit will hergestellt werden. Wenn es für Sie zum Beispiel klar ist, dass es die Perspektiven Stammdaten und Bewegungsdaten gibt mit den Dialogen Kundenübersicht, Produktübersicht und Rechnungsübersicht, dann ist noch nicht offensichtlich, wie sie zusammenhängen. Es ist eine aktive Entscheidung, die Stammdaten aus der Rechnungsübersicht zugänglich zu machen und nicht unabhängig davon. Die Idee dahinter: Meistens wollen Anwenderinnen Rechnungen erfassen. Das führt zu Geldeingängen, das sollte im Vordergrund stehen. Stammdatenverwaltung ist nur eine notwendige, „lästige“ Aufgabe daneben. Diese Entscheidung hätte aber auch anders ausfallen können. Alle drei Dialoge könnten gleichberechtigt von einem „Shell-Dialog“ aus zugänglich sein, in dessen Rahmen sie angezeigt werden (MDI). 
+
+Ohne sich in Details zu verlieren, können Sie mit Dialogübergangsdiagrammen schon darüber nachdenken, wie die Bedienungswege in Ihrer Applikation laufen sollen. Sie bauen sie auf hohem Abstraktionsniveau modellhaft auf. Praktikabel sind dafür auch Post-It-Notizzettel, deren Beziehungen Sie leicht verändern können, um zu erspüren, wie sich die grobe Bedienung wohl anfühlen würde (Slicing Part 4 Bild 13). 
+
+Dialoge sind für Sie als Entwickler greifbar. Sie wissen, wie Sie einen Dialog implementieren. Hier können Sie sich wohlfühlen; es gibt konkret etwas zu codieren. 
+
+Sie spüren etwas von dem Appeal, den Visual Basic 1.0 nach seinem Release im Jahr 1991 unmittelbar für viele gehabt hat: Es schien, als sei nun endlich visueller Softwareentwurf möglich. Software konnte scheinbar mit Dialogen und Steuerelementen strukturiert werden. Ein Doppelklick auf einem Menüeintrag oder Button hat sofort den Ort geliefert, an dem der Code geschrieben werden konnte, der den Benutzerwunsch erfüllt. 
+
+Doch leider, leider war das ein Missverständnis. Denn dieses Vorgehen skaliert nicht. So lässt sich für wachsende Applikationen kein sauberer Code entwickeln. Dennoch steckte darin eine Wahrheit, nämlich die, dass die Gestaltung der Benutzerschnittstelle Klarheit darüber schafft, was denn an Verhalten wann wie getriggert werden soll. Deshalb ist für mich die Dialog-Ebene im Slicing so wichtig. Sie gibt Ihnen dafür konkrete Anhaltspunkte – allerdings ohne den Anspruch, die Lösung in einem Button-Click-Eventhandler zu schreiben. Die gehört hinter einen Entry Point, der eben kein solcher Eventhandler ist, sondern nur der Hebel, über den eine Logik-Maschinerie in Gang gesetzt und getestet werden kann. Eventhandler gehören noch zum Frontend; sie basieren auf UI-Technologie. 
+
+Wenn Sie mit User Stories oder Use Cases arbeiten, ist es wichtig, dass Sie am Ende „abbiegen“ in Richtung Perspektiven und Dialoge (Slicing Part 4 Bild 6). Werden Sie ganz konkret. Lassen Sie den PO entscheiden, was er wo eingeben, auslösen und sehen will. Das darf er nicht mit einem Handwedeln an Sie abschieben. Sie riskieren sonst, dass Sie endlose teure Iterationen durchlaufen. Dialoge und ihre Übergänge sollten nicht erst mit Produktionscode für den PO erfahrbar gemacht werden, sondern vorher. Arbeiten Sie mit Papierprototypen, Mockups oder auch codierten Prototypen. Aber Hände weg von Produktionscode!
+
+Interaktionen
+
+Alle Interaktionen finden auf (beziehungsweise zwischen) Dialogen statt. Sie sind der Ort für die UI-Steuerelemente, die Interaktion überhaupt ermöglichen. UI-Steuerelemente können Ereignisse auslösen, und in den Eventhandlern dieser Ereignisse können Entry Points angestoßen werden. 
+
+Wenn Sie die Dialoge einer Applikation identifiziert haben (oder auch nur eine Untermenge, die Ihnen für ein Inkrement reicht), kennen Sie schon erste Interaktionen: Das sind die, die einen Übergang zwischen Dialogen beinhalten. Für sie stellt sich die Frage, wie genau sie ausgelöst werden und wie die Entry Points dahinter aussehen. 
+
+Darüber hinaus werden die meisten Dialoge allerdings noch weitere Interaktionsmöglichkeiten anbieten. Deshalb müssen Sie nun in jeden Dialog hineinzoomen. Das ist der nächste Level in der Slicing-Hierarchie. Sie machen die Dialoge auf und skizzieren, wie es darin aussieht. Was soll darin wann geschehen, das relevant für Sie im Sinne einer Codierung „hinter der Fassade“ eines Entry Points ist? Als Beispiel soll der Dialog zur Rechnungsübersicht in der Variante (A) dienen (Slicing Part 4 Bild 13). Bekannt sind schon die Interaktionen der Dialogübergänge:
+Kundenübersicht öffnen
+
+Produktübersicht öffnen
+
+Rechnungsdetails öffnen
+
+Zahlungseingang verbuchen
+
+Überfällige Zahlungen anzeigen
+
+Was könnte noch hinzukommen? Offensichtlich ist die Unterscheidung zwischen:
+
+Neue Rechnung anlegen
+
+Bestehende Rechnung öffnen
+
+In beiden Fällen werden die Rechnungsdetails angezeigt. Was könnten Anwenderinnen aber noch in einer Rechnungsübersicht tun wollen? Ich kann mir vorstellen, dass sie zum Beispiel …
+
+die Rechnungen filtern wollen, zum Beispiel nur die eines bestimmten Kunden oder nur die in einem Zeitraum,
+
+die Rechnungen sortieren wollen, 
+
+eine Rechnung archivieren wollen, wenn sie bezahlt ist, oder
+
+eine Rechnung löschen wollen, solange sie noch nicht an den Kunden geschickt wurde.
+
+Ihnen fallen vielleicht noch weitere Interaktionen ein. Oder nennen Sie es Funktionalitäten. 
+
+Im Dialog haben Sie „Dinge“ vor sich, mit denen, an denen, durch die Anwender etwas tun wollen. Das entzündet bestimmt Ihre Fantasie. Fachlichkeit trifft auf Software. An der Oberfläche, in den Dialogen müssen alle fachlichen Aktivitäten und Prozesse steuerbar beziehungsweise im Ergebnis spürbar gemacht werden. Das wirft natürlich nicht nur die Frage nach den Interaktionen mit ihren Entry Points auf, sondern auch die nach der Struktur:
+
+Wie ist die Erfassung des Inputs für jede Interaktion strukturiert?
+
+Wie ist die Darstellung des Outputs für jede Interaktion strukturiert?
+
+Wie genau soll die Verarbeitung getriggert werden?
+
+Das bedeutet, Sie müssen sich jetzt doch einige Gedanken über das Layout der Benutzerschnittstelle machen. Spätestens auf der Dialog-Ebene der Slicing-Hierarchie ist es also wichtig, jemanden von UI/UX hinzuzuziehen. Mit einer solchen Expertin an der Seite finden Sie die beste Darstellung und die optimalen Entry Points. Denn je nachdem, wie leistungsfähig eine UI-Technologie ist, sind manche Entry Points nötig oder eben nicht. 
+
+Betrachten Sie das Beispiel der Sortierung in der obigen Liste: Ja, Benutzer sollen die Rechnungen in der Übersicht sortieren können – aber müssen Sie dafür einen Entry Point anbieten und die Sortierung codieren? Oder kann das UI-Steuerelement für die Übersicht selbst sorgen? Was das UI „kostenlos“ bietet, müssen Sie nicht (unbedingt) als explizite Interaktion modellieren. 
+
+Bei den Dialogübergängen haben Sie viele Dialoge im Überblick ohne großartige Details. Slicing Part 4 Bild 14 zeigt ein Beispiel, wie ich ein solches Diagramm oft anfertige: als Skizze auf einem Blatt Papier. Schnell hingeworfen bekomme ich auf diese Weise einen Eindruck vom Big Picture der Interaktionen. Anschließend kann ich entscheiden, wo ich hineinzoome. Die visuellen Details, die ich auf einer solchen Skizze mitgebe, haben höchstens den Zweck, dass ich leicht erkennen kann, um was für eine Kategorie von Dialog es sich grundsätzlich handelt, zum Beispiel Übersicht, Formular. Dann muss ich mir weniger Mühe beim Entziffern der Beschriftung geben.
+
+Anschließend gehe ich die Übersicht Dialog für Dialog durch und überlege ganz genau, welche Interaktionen gerade hier gebraucht werden. Als Beispiel dient die Rechnungsübersicht in Slicing Part 4 Bild 15, ein Zoom-in auf den Dialog zur Rechnungsübersicht mit seinen Interaktionen. Für die ist nun sichtbar, wo genau sie ausgelöst werden. Und weitere Interaktionen kommen hinzu:
+
+Manche Interaktionen übernehme ich dabei von der Dialogübersicht, zum Beispiel (1) und (2).
+
+Allerdings starten die Pfeile nun an unterschiedlichen Punkten: Wenn ein Dialog überhaupt von dem im Fokus erreichtbar ist, beginnt der Pfeil weiterhin an dessen Rand (1). Manche Dialoge werden hingegen sehr spezifisch über Elemente angestoßen; dann beginnt der Pfeil nun im Dialog im Fokus (2), zum Beispiel wählt der Benutzer genau eine Rechnung aus, um für sie einen Zahlungseingang zu buchen.
+
+Andere Interaktionen kommen hinzu. Sie waren im Überblick nicht zu sehen (3). Sie beginnen meistens deshalb auch bei einem Steuerelement im Dialog im Fokus. Und sie führen zurück zum Dialog. Zum Beispiel beim Filtern wechselt ja nicht der Dialog, sondern nur die Projektion der Daten innerhalb des Dialogs.
+
+Entry Points
+
+Die Skizze eines Dialogs mit seinen Interaktionen ist dann auch der Ort, an dem Sie zu den Entry Points übergehen. Sie sehen ja genau, was an Daten zur Verfügung steht und was angezeigt werden soll. Das ist die Information, die Sie brauchen, um informierte Entscheidungen darüber zu treffen, wie die Schnittstellen der Entry-Point-Funktionen aussehen sollen. Als Beispiel in Slicing Part 4 Bild 16 nochmal einige Interaktionen der Rechnungsübersicht. Jeder Interaktionspfeil hat nun …
+
+einen Namen (1), der die Intention hinter der Aktion beschreibt und der Name der Entry-Point-Funktion wird,
+
+Parameter (2), die an die Funktion übergeben werden und vom UI aus den Eingabe-Steuerelementen „zusammengesammelt“ werden, und
+
+einen Rückgabewert (3), den der Zieldialog für die Anwenderin geeignet projiziert. Ich greife mal beispielhaft die Filtern-Interaktion heraus. Für sie gibt es einen eigenen Button im Dialog, und die Intention ist klar:
+
+Es soll nach Rechnungsdatum und/oder Kundenname gefiltert werden. Mir scheint es am einfachsten, wenn all diese Angaben aus den Eingabefeldern (von & bis Datum, Name oder Namensteil des Kunden) immer in den Entry Point hineingehen. Dort wird genau geschaut, was vorhanden ist und wie die interne Abfrage dann am besten läuft.
+
+Als Resultat liefert der Entry Point eine Liste von Rechnungsobjekten. Allerdings sind das nicht die Domänenobjekte, sondern speziell für die Darstellung im UI zusammengestellte Objekte. Deshalb heißt der Typ RechnungPo; Po steht dabei für ProjektionsObject, das heißt ein Objekt, dessen Zweck allein ist, Daten zu transportieren, die einer Darstellung genügend Futter bieten. Das Objekt ist also ein DTO (Data Transfer Object), allerdings eines zwischen Frontend und Domäne. Wahrscheinlich stehen darin nur die Angaben, die auch in der Tabelle der Übersicht zu sehen sind, und eine ID. Für alles Weitere muss das UI wieder bei einem Entry Point anfragen, wie es zum Beispiel mit ÖffnenDetails(id:string):RechnungsdetailsPo geschieht. Das führt zur Öffnung eines neuen Dialogs, der mehr Daten braucht. 
+
+Ich liebe digitale Tools. Doch die Analyse der Anforderungen ist ein kreativer Prozess, der von vielen schnellen Iterationen profitiert. Da will ich schnell sein, wenn ich einen Gedanken habe. Deshalb benutze ich gern analoge Tools wie Papier und Stift, um das, was ich im Kopf habe, für mich oder auch andere greifbarer zu machen. Wenn es später sauberer nötig sein sollte, kann ich immer noch eine Reinzeichnung anfertigen. Meistens entfällt das jedoch, weil aus den Skizzen gleich Code wird.
+
+Zwischenstand
+
+Jetzt haben Sie die wesentlichen Ebenen der Slicing-Hierarchie kennengelernt. Alles beginnt beim Gesamtsystem mit dem Ziel, die einzelnen Interaktionen der Benutzer mit ihm herauszuarbeiten. Die sind auf solcher Flughöhe meistens nicht zu erkennen und kaum abzählbar. Deshalb ist eine schrittweise Annäherung über mehrere Zerlegungsebenen nötig (Slicing Part 4 Bild 17). Auf jeder tieferen Ebene zerfallen die Elemente der darüberliegenden in Teile, die jeweils einen überschaubareren Scope, also einen engeren Anforderungshorizont haben. Jedes dieser Teile auf jeder Ebene stellt ein Inkrement im Sinne der Agilität dar. 
+
+Die Lieferung des Gesamtsystems befriedigt den Kunden vollständig, aber auch die Lieferung nur eines Dialogs mit all seinen Interaktionen oder sogar die Lieferung eines Entry Points stellt einen kleinen, werthaltigen Fortschritt dar. Keine der Ebenen des Slicings ist für Sie Pflicht. Sie steigen ein, wo Sie Klarheit gewinnen möchten. 
+
+Das ist eigentlich immer beim System, das Sie zumindest einmal in seine Umwelt stellen sollten, um Rollen und Ressourcen zu identifizieren. Anschließend können Sie direkt zur Ebene der Interaktionen hinunterspringen – doch meistens werden Sie die noch nicht klar aus der großen Höhe des Systems erkennen können. Also überlegen Sie, ob eine Zerlegung in Applikationen Ihnen helfen kann, sich zu fokussieren. Oder ob Perspektiven im Frontend helfen, Sie zu inspirieren. 
+
+Spätestens bei den Dialogen werden Sie jedoch praktischerweise landen, denn die haben immer eine Entsprechung im Code. Interaktionen und Entry Points pro Dialog zu sammeln ist für jedes Softwaresystem hilfreich. Dorthin sollten Sie deshalb auch von anderen Ansätzen wie User Stories oder Use Cases abbiegen. 
+
+Tun Sie sich diesen Gefallen einer Konkretisierung mit dem Product Owner. Ohne Dialoge mit ihren Interaktionen erhalten Sie keine Klarheit über den ganz handfesten Umgang der Anwender mit einem Softwaresystem; das ist zentral für Akzeptanz und Nutzen. Ohne Dialoge mit ihren Interaktionen gibt es keine Klarheit über die Entry Points, mit denen Sie anschließend in Entwurf und Codierung starten.
