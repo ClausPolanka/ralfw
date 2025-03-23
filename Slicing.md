@@ -578,3 +578,29 @@ Das ist eigentlich immer beim System, das Sie zumindest einmal in seine Umwelt s
 Spätestens bei den Dialogen werden Sie jedoch praktischerweise landen, denn die haben immer eine Entsprechung im Code. Interaktionen und Entry Points pro Dialog zu sammeln ist für jedes Softwaresystem hilfreich. Dorthin sollten Sie deshalb auch von anderen Ansätzen wie User Stories oder Use Cases abbiegen. 
 
 Tun Sie sich diesen Gefallen einer Konkretisierung mit dem Product Owner. Ohne Dialoge mit ihren Interaktionen erhalten Sie keine Klarheit über den ganz handfesten Umgang der Anwender mit einem Softwaresystem; das ist zentral für Akzeptanz und Nutzen. Ohne Dialoge mit ihren Interaktionen gibt es keine Klarheit über die Entry Points, mit denen Sie anschließend in Entwurf und Codierung starten.
+
+ANFORDERUNGSANALYSE FÜR ENTWICKLER, TEIL 5
+
+Grobe Schnitte durch die Anforderungen
+
+Die Ebenen Kontexte und Worker ergänzen die Slicing-Hierarchie und tragen in großen Softwaresystemen zu präzisen, testbaren Anforderungen und robuster Architektur bei.
+
+"Teile und herrsche!“ ist ein immer wieder zitiertes Prinzip nicht nur in der Politik, sondern auch in der Softwareentwicklung. Wenn etwas zu groß oder zu unübersichtlich ist, dann sollte man es in Teile zerlegen, von denen jeder für sich überschaubar ist. Und die Beziehungen zwischen den Teilen werden zu einem weiteren „Teil“, den man dann ebenfalls leichter überblicken kann. Ja, es ist geradezu so, dass die Beziehungen dann erst überhaupt managebar werden, weil sie nun explizit sind. Wo vorher in einem zu großen Ganzen Aspekte nur erahnbar waren und ihre Beziehungen im Nebel lagen, liegt beides nach einer Teilung übersichtlich und klar vor. Hoffentlich. Denn die Teilung muss einen Sweet Spot treffen: Sie darf nicht zu grob sein, denn dann bringt sie keinen Klarheitsgewinn. Sie darf allerdings auch nicht zu fein sein, denn dann schafft sie neue Unübersichtlichkeit. Zu viel von allem kann genauso überfordern wie zu groß. 
+
+Doch was, wenn der Sweet Spot immer noch dort liegt, wo die entstehenden Teile zu groß für einfaches Verständnis sind? Dann kann das Prinzip auf sie erneut angewandt werden. Und nochmal, falls nötig. Und nochmal und nochmal und immer so weiter. 
+
+„Teile und herrsche!“ ist ein rekursives Prinzip, das zu einer rekursiven Struktur führt: einem Baum aus Teilen, die wiederum Ganze sein können mit weiteren Teilen, eine sogenannte Holarchie. Slicing Part 5 Bild 1 zeigt eine solche Zerlegung eines Ganzen in kleinere und kleinere Teile. 
+
+Der Bereich in der Softwareentwicklung, auf den „Teile und herrsche!“ vor allem angewendet wird, ist der Code. Das Prinzip folgt der Empfehlung, Code zu modularisieren. Darum geht es auch beim Prinzip der Separation of Concerns (SoC). Module sind benannte Aggregate von Logik, gekapselt in Funktionen und versehen mit einer Schnittstelle:
+
+Aggregat: Module versammeln Code in sich, der sich irgendwie (thematisch) ähnelt. Als Abstraktionen ziehen Module eine Linie um Code, der „irgendwie zusammengehört“, zum Beispiel „Code, der sich um die Persistenz der Daten kümmert“ (horizontales Modul) oder „Code, der sich um die Benutzeranmeldung kümmert: vom UI bis zur Persistenz“ (vertikales Modul).
+
+Benannt: Module haben einen Namen, der den darin versammelten Code kurz und knapp mit einem Etikett versieht, zum Beispiel „Repository“ oder „Authentifizierung“.
+
+Logik: Logik ist der Code, der in einem Modul versammelt wird, und der Code, der das „thematische“ Verhalten eines Moduls erzeugt. Wenn die Logik auch noch Daten braucht, können diese ebenfalls im Modul angesiedelt werden.
+
+Funktionen: Die Logik eines Moduls muss von außen gezielt angesprochen werden können. Das geschieht über Funktionen mit ihren Namen und Parametern, zum Beispiel Load(), Store(), Map(), Serialize().
+
+Schnittstelle: Was die Umwelt eines Moduls vom Modul wissen darf, veröffentlicht es in seiner Schnittstelle. Sie ist im einfachsten und besten Fall eine Liste von außen sichtbarer/aufrufbarer Funktionen. Weitere Funktionen und auch Daten mögen ebenfalls zum Modul gehören, doch davon bekommt die Außenwelt keine Kenntnis. Die Schnittstelle sorgt dafür, dass Module Codedetails tatsächlich kapseln – deshalb sind Namensräume in C# keine Module, sondern eben nur Horizonte einzigartiger Bezeichner. Durch eine Schnittstelle würde zum Beispiel unterschieden zwischen den Funktionen Load() und Store(), die öffentlich sind, und Map() und Serialize(), die von diesen aufgerufen werden, aber nicht öffentlich sind, das heißt privat.
+
+TODO Page 2
